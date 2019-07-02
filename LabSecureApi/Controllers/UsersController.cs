@@ -48,7 +48,7 @@ namespace LabSecureApi.Controllers
 
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.Name, user.Id.ToString()));
-            claims.AddClaim(new Claim("Usuario", "Listar"));
+            claims.AddClaim(new Claim("Usuario", "Listar,All"));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -96,6 +96,8 @@ namespace LabSecureApi.Controllers
             }
         }
 
+
+        [ClaimsAuthorize("Usuario", "All")]
         [HttpGet]
         public IActionResult GetAll()
         {
