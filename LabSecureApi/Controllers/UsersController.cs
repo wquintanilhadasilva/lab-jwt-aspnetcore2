@@ -45,13 +45,21 @@ namespace LabSecureApi.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+
+            var claims = new ClaimsIdentity();
+            claims.AddClaim(new Claim(ClaimTypes.Name, user.Id.ToString()));
+            claims.AddClaim(new Claim("Usuario", "Listar"));
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
-                }),
+                //Subject = new ClaimsIdentity(new Claim[]
+                //{
+                //    new Claim(ClaimTypes.Name, user.Id.ToString())
+                //}),
+                Subject = claims,
                 Expires = DateTime.UtcNow.AddDays(7),
+                //, Audience = appSettings.ValidEm
+                //, Issuer = appSettings.Emissor
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -97,6 +105,7 @@ namespace LabSecureApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [ClaimsAuthorize("Usuario","Listar")]
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);

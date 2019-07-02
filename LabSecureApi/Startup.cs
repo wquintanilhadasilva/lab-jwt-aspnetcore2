@@ -46,6 +46,7 @@ namespace LabSecureApi
             })
             .AddJwtBearer( x =>
             {
+                // Verifica se o usuário ainda existe na base de dados
                 x.Events = new JwtBearerEvents
                 {
                     OnTokenValidated = context =>
@@ -67,8 +68,10 @@ namespace LabSecureApi
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = false, //true
+                    ValidateAudience = false //true
+                    //, ValidAudience = appSettings.ValidEm
+                    //, ValidIssuer = appSettings.Emissor
                 };
             });
 
